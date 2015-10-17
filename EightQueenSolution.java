@@ -2,12 +2,15 @@ import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-public class EightQueenSolution extends Applet implements Runnable, MouseListener, KeyListener, MouseMotionListener
-{
+public class EightQueenSolution extends Applet implements Runnable, MouseListener, KeyListener, MouseMotionListener, AdjustmentListener
+{  
+   public Scrollbar slider;    // will hold the GUI object
+   public int sliderValue;     // value of the slider is recorded here
+   public TextField t;
    public int worldx;
    public int worldy;
    public boolean finished=false;
-   public int size=25;
+   public int size=26;
    public int numberSolutions=0;
    public class Queen{
       public int row, column;
@@ -24,6 +27,7 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
 
    public void init()
    {
+
       worldx=1400;//Sets the world size
       worldy=1000;//Sets the world size
       Queen[] queens = new Queen[size];
@@ -34,7 +38,14 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
 
       offscreen = createImage(worldx,worldy); //create a new image that's the size of the applet DOUBLE BUFFER SET UP
       bufferGraphics = offscreen.getGraphics(); //set bufferGraphics to the graphics of the offscreen image. DOUBLE BUFFER SET UP
-      
+      slider = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, possibleSolutions.size());
+      // add it to the applet
+      add(slider);
+      // register this applet as a listener for the object
+      slider.addAdjustmentListener(this);
+      t = new TextField(4);
+      t.setText(String.valueOf(sliderValue));    
+      add(t);
       addKeyListener(this);//setup all the listeners
       addMouseListener(this);//setup all the listeners
       addMouseMotionListener(this);//setup all the listeners
@@ -45,6 +56,8 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
       if(currentQueen==queens.length){
          finished=true;
          numberSolutions++;
+         copyToSolution(queens);
+         //System.out.println(numberSolutions);
          printQueens(queens, numberSolutions);
       }
       else{
@@ -71,6 +84,7 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
         return true;
     }
    public void printQueens(Queen[] queens, int numSol){
+      
       System.out.println("--------Start Solution "+numSol+" --------");
       for(int i=0;i<size;i++){
             for(int x=0;x<size;x++){
@@ -85,11 +99,38 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
          }
       System.out.println("--------END--------");
    }
+   public void copyToSolution(Queen[] queens){
+      Queen[] tempQueen = new Queen[queens.length];
+      for(int i=0;i<tempQueen.length;i++){
+         tempQueen[i]=new Queen(i);
+         tempQueen[i].column=queens[i].column;
+      }
+      possibleSolutions.add(tempQueen);
+   }
    public void paint(Graphics g) 
    {// paint() is used to display things on the screen
-      setSize(worldx,worldy);
+      setSize(size*50,size*50);
       bufferGraphics.clearRect(0,0,worldx,worldy); //clear the offscreen image
       bufferGraphics.setColor(Color.black);
+      if(finished){
+         Queen[] queens = possibleSolutions.get(sliderValue);
+         for(int i=0;i<size;i++){
+            for(int x=0;x<size;x++){
+               if(x!=queens[i].column){
+                  bufferGraphics.setColor(new Color(255,75,112));
+                  bufferGraphics.fillRect(x*50,i*50,x*50+50,i*50+50);
+                  bufferGraphics.setColor(Color.black);
+                  bufferGraphics.drawString("*",x*50+25,i*50+25);
+               }
+               else{
+                  bufferGraphics.setColor(new Color(255,232,75));
+                  bufferGraphics.fillRect(x*50,i*50,x*50+50,i*50+50);
+                  bufferGraphics.setColor(Color.black);
+                  bufferGraphics.drawString("Q",x*50+25,i*50+25);
+               }
+            }
+         }
+      }
       g.drawImage(offscreen,0,0,worldx,worldy,this);//Draw the screen
    }// paint()
    public void mouseDragged(MouseEvent e) {
@@ -137,7 +178,12 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
       keyin = event.getKeyChar(); //getKeyChar() returns the character of the printable key pressed. 
       System.out.println ("Key Typed: "+ keyin);
    }//keyTyped()
-  
+  public void adjustmentValueChanged(AdjustmentEvent e) {
+      // record the value of the slider
+      sliderValue = slider.getValue();
+      t.setText(""+sliderValue);
+      repaint();
+   } // end of adjustmentValueChanged
    public void update (Graphics g) 
    {
       paint(g); 
