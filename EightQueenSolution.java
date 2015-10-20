@@ -10,7 +10,7 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
    public int worldx;
    public int worldy;
    public boolean finished=false;
-   public int size=26;
+   public int size=8;
    public int numberSolutions=0;
    public class Queen{
       public int row, column;
@@ -57,7 +57,6 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
          finished=true;
          numberSolutions++;
          copyToSolution(queens);
-         //System.out.println(numberSolutions);
          printQueens(queens, numberSolutions);
       }
       else{
