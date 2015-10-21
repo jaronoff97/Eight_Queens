@@ -10,7 +10,7 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
    public int worldx;
    public int worldy;
    public boolean finished=false;
-   public int size=8;
+   public int size=10;
    public int numberSolutions=0;
    public class Queen{
       public int row, column;
