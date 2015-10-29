@@ -6,7 +6,7 @@ public class EightQueenSolution extends Applet implements Runnable, MouseListene
 {  
    public Scrollbar slider;    // will hold the GUI object
    public int sliderValue;     // value of the slider is recorded here
-   public TextField t;
+   public TextField t; //Test
    public int worldx;
    public int worldy;
    public boolean finished=false;
