@@ -1,6 +1,6 @@
 public class test {
 	int x;
 	public test(){
-		x=0;
+		x=2;
 	}
 }
